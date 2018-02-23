@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Created by PhpStorm.
  * User=> Pardeep Kumar
@@ -9,9 +8,10 @@
 
 namespace Api\INS\V1;
 
-use Storage\Insurance;
 use Cache\FileSystem;
 use Config;
+use Config\Site;
+use Storage\Api\DCTraffic;
 
 class Response {
 
@@ -24,7 +24,6 @@ class Response {
     private $salt = 'U3KqyrewdMuCotTS';
     private $monthRange = 6;
     public $publicKey = 'restricted';
-
     const SESSION_FLAG = '1';
     const CACHE_REFRESH_PER_SEC = 's';
     const CACHE_REFRESH_PER_MIN = 'i';
@@ -83,7 +82,7 @@ class Response {
     public function putup() {
         $requestParams = \Config\Site::getAllRequestGetParams();
         $this->setErrorReporting($requestParams);
-        //$api_log_id=$this->saveApiLog($requestParams);
+        $api_log_id=$this->saveApiLog($requestParams);
         switch ($requestParams['method']) {
             case 'getInsuranceCases':
                 $response = $this->getInsuranceCase($requestParams);
@@ -91,34 +90,21 @@ class Response {
             default: $response = array('status' => 'F', 'msg' => 'Method not valid', 'error' => 'Method not valid');
                 break;
         }
-//        if ($api_log_id && $response) {
-//             $this->updateApiLog($api_log_id,$response);
-//        }
+        if ($api_log_id && $response) {
+             $this->updateApiLog($api_log_id,$response);
+        }
         return $response;
     }
 
     private function saveApiLog($requestParams) {
-        
-        if($requestParams['method']){
-        if(\Config\Config::isNotMongo()){
-              $apiLogObj     = new \Storage\Insurance\ApiLog();
+              $apiLogObj     = new \Storage\Api\ApiLog();
               $id= $apiLogObj->saveApiLog($requestParams);
               return array('status'=>true,'type'=>'mysql','_id'=>$id);
-        }else {
-        $apiLogObj = new \Storage\Insurance\MongoLogs();
-        return $apiLogObj->saveApiLogsInMongo($requestParams);
-        }
-        }
-        
     }
     private function updateApiLog($id, $response) {
-        if(\Config\Config::isNotMongo()){
-         $apiLogObj     = new \Storage\Insurance\ApiLog();
+         $apiLogObj     = new \Storage\Api\ApiLog();
+         $response='hello';
          return $apiLogObj->updateApiLog($id['_id'],$response);
-        }else {
-        $apiLogObj = new \Storage\Insurance\MongoLogs();
-        return $apiLogObj->updateApiLogs($id, $response);
-        }
     }
     
     public function setErrorReporting($params){

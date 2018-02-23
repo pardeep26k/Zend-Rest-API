@@ -8,7 +8,7 @@
 
 /* Condition for Staging Database Credentials */
 DEFINE('DB_HOST','localhost');
-DEFINE('DB_NAME','Dealer');
+DEFINE('DB_NAME','ussd');
 DEFINE('DB_USER','root');
-DEFINE('DB_PASS','');
+DEFINE('DB_PASS','admin');
 ?>
