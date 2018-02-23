@@ -33,8 +33,8 @@ if(!empty($matches))
     'v2',
     'v3',
 ]);
-ini_set('display_error', '1');
-error_reporting(E_ALL);
+//ini_set('display_error', '1');
+//error_reporting(E_ALL);
 $uri = implode('/', $uricom);
 $server = new \Rest\Server('debug');
 
